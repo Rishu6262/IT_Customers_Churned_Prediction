@@ -24,7 +24,7 @@ MODEL_PATH = BASE_DIR / "best_fraud_model.pkl"
 DATASET_PATH = BASE_DIR / "IT_customer_churn.csv"
 
 st.set_page_config(
-    page_title="ChurnLens | Customer Churn Prediction",
+    page_title="ChurnLens | IT Customer Churn Prediction",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -193,16 +193,16 @@ if model_names is not None and list(model_names) != FEATURE_COLUMNS:
 # ------------------------------- Sidebar -------------------------------
 with st.sidebar:
     st.markdown("## ◈ ChurnLens")
-    st.caption("CUSTOMER INTELLIGENCE")
+    st.caption("IT CUSTOMER INTELLIGENCE")
     st.markdown("---")
     st.markdown("**Workspace**")
-    st.markdown("Customer prediction")
+    st.markdown("IT Customer prediction")
     st.markdown("Risk assessment")
     st.markdown("---")
     st.success("Model and dataset loaded")
     st.caption(f"{len(FEATURE_COLUMNS)} input features")
     st.markdown("---")
-    st.caption("Streamlit · Pandas · XGBoost")
+    st.caption("Streamlit · Pandas · XGBoost · Numpy · Fastapi · Pydantic · Python · Machine learning")
 
 
 # -------------------------------- Header --------------------------------
@@ -210,7 +210,7 @@ st.markdown(
     """
     <div class="hero">
       <div class="hero-kicker">Customer analytics / ML workspace</div>
-      <h1>Customer Churn Prediction</h1>
+      <h1>IT Customer Churn Prediction</h1>
       <p>Evaluate a customer's likelihood of leaving using account,
       service and billing information. Complete the profile and run
       the trained classification model.</p>
@@ -238,12 +238,12 @@ for column, (label, value) in zip(metric_columns, metrics):
         )
 
 st.write("")
-st.subheader("Customer profile")
+st.subheader("IT Customer profile")
 st.caption("Account, service and billing details are grouped for easier entry.")
 
 
 # -------------------------------- Form --------------------------------
-with st.form("customer_churn_form"):
+with st.form("IT customer_churn_form"):
     st.markdown("#### Account information")
     a1, a2, a3 = st.columns(3)
     with a1:
@@ -321,7 +321,7 @@ with st.form("customer_churn_form"):
             max_value=1000000.0, value=840.0, step=10.0,
         )
 
-    st.caption("All 19 customer input features are shown above.")
+    st.caption("All 19 IT customer input features are shown above.")
     submitted = st.form_submit_button(
         "Run churn prediction", use_container_width=True
     )
@@ -415,9 +415,9 @@ if submitted:
                 risk_color = "#34D399"
 
             result_text = (
-                "The model predicts this customer may churn."
+                "The model predicts this IT customer may churn."
                 if is_churn
-                else "The model predicts this customer is likely to stay."
+                else "The model predicts this IT customer is likely to stay."
             )
 
             st.markdown(
@@ -426,7 +426,7 @@ if submitted:
                   <div style="display:flex;justify-content:space-between;
                               align-items:flex-start;gap:20px;flex-wrap:wrap;">
                     <div>
-                      <div class="risk-muted">CHURN RISK ASSESSMENT</div>
+                      <div class="risk-muted">IT CHURN RISK ASSESSMENT</div>
                       <div class="risk-title">{risk_label}</div>
                     </div>
                     <div style="text-align:right;">
@@ -462,9 +462,9 @@ if submitted:
             )
         else:
             if is_churn:
-                st.warning("Churn risk detected by the classification model.")
+                st.warning("IT Churn risk detected by the classification model.")
             else:
-                st.success("The model predicts this customer is likely to stay.")
+                st.success("The model predicts this IT customer is likely to stay.")
             st.info("This model does not provide predict_proba output.")
 
         st.caption(
