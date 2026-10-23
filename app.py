@@ -50,8 +50,12 @@ def load_dataset_and_encoders():
         raise FileNotFoundError(f"Dataset file not found: {DATASET_PATH.name}")
 
     data = pd.read_csv(DATASET_PATH)
-    required = {"Churn", "customerID", "gender", "SeniorCitizen",
-                "tenure", "MonthlyCharges", "TotalCharges"}
+    required = {"Churn",
+        "gender",
+        "SeniorCitizen",
+        "tenure",
+        "MonthlyCharges",
+        "TotalCharges",}
     missing = required - set(data.columns)
     if missing:
         raise ValueError(f"Dataset missing columns: {sorted(missing)}")
