@@ -1,5 +1,3 @@
-from pathlib import Path
-
  📊 ChurnLens — Customer Churn Prediction System
 
 > An end-to-end Machine Learning application that estimates customer churn risk using customer account, service, contract, and billing information.
