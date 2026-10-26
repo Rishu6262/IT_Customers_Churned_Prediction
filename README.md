@@ -317,7 +317,6 @@ Before using it for real business decisions, validate the model's training targe
 I am interested in developing practical applications using Python, Data Analytics, Machine Learning, and AI. I enjoy building end-to-end projects that connect data processing and trained models with usable applications.
 
 ### 📬 Connect with Me
-
 - **GitHub:** https://github.com/Rishu6262
 - **LinkedIn:** https://www.linkedin.com/in/rishu-gurjar-58072a333/
 - **Kaggle:** https://www.kaggle.com/rishugurjar
