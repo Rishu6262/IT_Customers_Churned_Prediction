@@ -327,32 +327,69 @@ These attributes describe different parts of a customer relationship: tenure, se
 
 
 ⚙️ Application Workflow
-The application follows this high-level process:
-1. Load files: locate the dataset and saved model relative to the application directory.
-2. Validate dataset: check required columns and normalize column-name whitespace.
-3. Prepare feature list: exclude the target (Churn) and the identifier (customerID) where present.
-4. Separate data types: identify numeric and categorical columns according to the current implementation and training schema.
-5. Build categorical encoders: the current approach reconstructs categorical encoder classes from dataset values.
-6. Check model schema: compare expected feature count and feature names/order when the estimator exposes those attributes.
-7. Collect customer inputs: the Streamlit form gathers the 19 profile values.
-8. Build input DataFrame: arrange submitted values into one record in the expected feature order.
-9. Encode input: convert categorical values to the model's expected numeric representation.
-10. Predict: call the estimator's predict() method and, if supported, predict_proba().
-11. Display result: show the predicted class, estimated probability, and visual risk indicator.
-Workflow diagram
+## Application Workflow
+
+ChurnLens follows a structured end-to-end workflow to transform customer information into a churn prediction. The application handles data validation, feature preparation, categorical encoding, model inference, and result visualization through an interactive Streamlit interface.
+
+### Workflow Steps
+
+**1. Load Dataset and Model**  
+The application loads the customer dataset and serialized machine learning model using paths relative to the application directory.
+
+**2. Dataset Validation**  
+Required columns are checked to ensure the dataset follows the expected schema. Column names are also normalized to handle unnecessary whitespace.
+
+**3. Feature Preparation**  
+The target column (`Churn`) and customer identifier (`customerID`) are excluded from the input feature set where applicable.
+
+**4. Data Type Identification**  
+Numeric and categorical features are identified according to the application's current data-processing logic and expected model schema.
+
+**5. Categorical Encoding**  
+Categorical values are converted into numeric representations. The current implementation reconstructs encoder classes using the categorical values available in the dataset.
+
+**6. Model Schema Validation**  
+Where supported by the estimator, the application checks the expected feature count and feature names/order to help identify input compatibility issues.
+
+**7. Customer Input Collection**  
+The Streamlit form collects 19 customer attributes, including profile information, subscribed services, contract details, and billing data.
+
+**8. Input DataFrame Construction**  
+Submitted form values are organized into a single-row Pandas DataFrame using the expected feature structure.
+
+**9. Input Preprocessing**  
+Categorical inputs are encoded into numeric values required by the saved model.
+
+**10. Model Inference**  
+The application generates a prediction using `predict()`. If the model supports `predict_proba()`, it also retrieves class probability estimates.
+
+**11. Result Visualization**  
+The prediction results are presented through the application interface, including the predicted class, estimated probability (when available), and a visual risk indicator.
+
+### Workflow Diagram
+
 ```mermaid
 flowchart TD
-    A[User opens ChurnLens] --> B[Streamlit customer form]
-    B --> C[Collect 19 customer inputs]
-    C --> D[Validate and prepare input]
-    D --> E[Create input DataFrame]
-    E --> F[Categorical preprocessing]
-    F --> G[Load / use saved classifier]
-    G --> H[Predicted class]
-    G --> I[Class probability, if supported]
-    H --> J[Result dashboard]
-    I --> J
+    A[User opens ChurnLens] --> B[Streamlit Interface]
+    B --> C[Customer Input Form]
+    C --> D[Collect 19 Customer Attributes]
+    D --> E[Validate Input & Prepare Features]
+    E --> F[Construct Input DataFrame]
+    F --> G[Categorical Preprocessing]
+    G --> H[Model Schema Compatibility Check]
+    H --> I[Saved ML Classifier]
+    I --> J[Predict Churn Class]
+    I --> K[Calculate Probability if Supported]
+    J --> L[Result Dashboard]
+    K --> L
 ```
+
+### Workflow Summary
+
+The workflow connects data preparation and machine learning inference with an interactive web application. It enables users to submit customer information, process the input into the expected format, generate a prediction, and view the result in a user-friendly dashboard.
+
+> **Note:** Prediction reliability depends on the saved model, training-time preprocessing, feature compatibility, and correct class mapping. Reconstructing categorical encoders at runtime may introduce inconsistencies if their mappings differ from those used during model training.
+> ```
 🧠 Prediction and Probability
 predict()
 The model's predict() method returns a predicted class for the supplied customer record. The meaning of the returned class depends on how the target was encoded during training.
