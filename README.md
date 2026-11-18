@@ -195,32 +195,137 @@ Dataset preparation performed by the application
 These are basic preparation steps; they do not replace a complete data-quality or training pipeline.
 
 
-🧾 Input Features
-The app collects 19 customer attributes. The available values and data types must match the model's training schema.
-Feature	Description	Example values
-gender	Gender category as recorded in the dataset	Female, Male
-SeniorCitizen	Senior-citizen indicator	0, 1
-Partner	Whether the customer has a partner	Yes, No
-Dependents	Whether the customer has dependents	Yes, No
-tenure	Number of months with the provider	0–`72` in the current form
-PhoneService	Whether phone service is active	Yes, No
-MultipleLines	Multiple phone lines or no-service category	Yes, No, No phone service
-InternetService	Internet service type	DSL, Fiber optic, No
-OnlineSecurity	Online security service selection	Yes, No, No internet service
-OnlineBackup	Online backup service selection	Yes, No, No internet service
-DeviceProtection	Device protection selection	Yes, No, No internet service
-TechSupport	Technical support selection	Yes, No, No internet service
-StreamingTV	TV streaming selection	Yes, No, No internet service
-StreamingMovies	Movie streaming selection	Yes, No, No internet service
-Contract	Contract duration	Month-to-month, One year, Two year
-PaperlessBilling	Paperless billing indicator	Yes, No
-PaymentMethod	Customer payment method	Electronic check, Mailed check, Bank transfer (automatic), Credit card (automatic)
-MonthlyCharges	Current monthly charge	Non-negative numeric value
-TotalCharges	Accumulated customer charges	Non-negative numeric value
+## 🧾 Input Features
+
+ChurnLens collects **19 customer attributes** through its interactive input form. These attributes represent different aspects of a customer's profile, service subscriptions, contractual relationship, and billing activity.
+
+The collected information is converted into a structured input record and passed to the prediction pipeline. The feature names, data types, categorical values, numerical ranges, and feature order must remain compatible with the model's training schema.
+
+### Feature Description
+
+| Feature | Description | Example Values |
+|---|---|---|
+| `gender` | Gender category recorded in the dataset | Female, Male |
+| `SeniorCitizen` | Indicates whether the customer is categorized as a senior citizen | 0, 1 |
+| `Partner` | Indicates whether the customer has a partner | Yes, No |
+| `Dependents` | Indicates whether the customer has dependents | Yes, No |
+| `tenure` | Duration of the customer's relationship with the provider, measured in months | 0–72 (current form range) |
+| `PhoneService` | Indicates whether telephone service is active | Yes, No |
+| `MultipleLines` | Represents multiple phone lines or the absence of phone service | Yes, No, No phone service |
+| `InternetService` | Type of internet service subscribed to by the customer | DSL, Fiber optic, No |
+| `OnlineSecurity` | Indicates whether online security service is included | Yes, No, No internet service |
+| `OnlineBackup` | Indicates whether online backup service is included | Yes, No, No internet service |
+| `DeviceProtection` | Indicates whether device protection is included | Yes, No, No internet service |
+| `TechSupport` | Indicates whether technical support service is included | Yes, No, No internet service |
+| `StreamingTV` | Indicates whether TV streaming service is subscribed to | Yes, No, No internet service |
+| `StreamingMovies` | Indicates whether movie streaming service is subscribed to | Yes, No, No internet service |
+| `Contract` | Type and duration of the customer's service contract | Month-to-month, One year, Two year |
+| `PaperlessBilling` | Indicates whether the customer receives paperless billing | Yes, No |
+| `PaymentMethod` | Payment method used for the customer's account | Electronic check, Mailed check, Bank transfer (automatic), Credit card (automatic) |
+| `MonthlyCharges` | Current recurring monthly amount charged for the subscribed services | Non-negative numeric value |
+| `TotalCharges` | Accumulated charges recorded for the customer | Non-negative numeric value |
+
+---
+
+### Feature Categories
+
+The input features can be grouped into five broad categories based on the type of information they represent.
+
+#### 1. Customer Profile
+
+These attributes provide basic customer-related information available in the dataset.
+
+- `gender`
+- `SeniorCitizen`
+- `Partner`
+- `Dependents`
+
+These features represent profile characteristics that may help the model identify patterns present in the training data.
+
+#### 2. Customer Tenure
+
+- `tenure`
+
+Represents the number of months a customer has been associated with the service provider.
+
+Tenure provides information about the duration of the customer relationship. It is a numerical feature that represents account duration rather than a categorical customer label.
+
+#### 3. Service Subscription Information
+
+These attributes describe the services and optional features associated with a customer's account.
+
+- `PhoneService`
+- `MultipleLines`
+- `InternetService`
+- `OnlineSecurity`
+- `OnlineBackup`
+- `DeviceProtection`
+- `TechSupport`
+- `StreamingTV`
+- `StreamingMovies`
+
+This category represents the customer's service configuration and subscribed features.
+
+#### 4. Contract Information
+
+- `Contract`
+
+Describes the customer's contract arrangement:
+
+- Month-to-month
+- One year
+- Two year
+
+Contract information represents the type of commitment associated with the customer's service.
+
+#### 5. Billing and Payment Information
+
+These attributes represent customer billing-related information.
+
+- `PaperlessBilling`
+- `PaymentMethod`
+- `MonthlyCharges`
+- `TotalCharges`
+
+They include billing preferences, payment methods, recurring charges, and accumulated charges.
+
+---
+
+### Why Are These Features Used?
+
+Customer attributes provide structured information that can be used by a classification model to identify patterns associated with the target variable.
+
+For example, a model may learn statistical relationships between customer tenure, contract type, service subscriptions, monthly charges, and churn labels from its training data.
+
+However, these relationships are learned from data and do not automatically establish that any particular feature causes customer churn.
+
+### Input Data Processing
+
+Before prediction, the customer form's values are organized into a structured record, typically represented as a Pandas DataFrame.
+
+The input data must satisfy the following requirements:
+
+- Required features must be present.
+- Feature names must match the expected schema.
+- Numerical values must be represented using compatible numeric data types.
+- Categorical values must use valid categories.
+- Missing or invalid values must be handled consistently with training.
+- Feature order must be preserved when required by the model.
+- Preprocessing must be compatible with the preprocessing used during model training.
+
+### Feature Compatibility
+
+The application uses these customer attributes to construct a prediction input. The model's expected features may depend on how the training data was processed.
+
+A mismatch in categorical encoding, numerical transformations, feature order, or missing-value handling can affect the prediction even if the application executes successfully.
+
+For reliable inference, the input schema and preprocessing steps should be maintained alongside the trained model, preferably through a saved preprocessing-and-model pipeline.
 
 
 Why do these features matter?
 These attributes describe different parts of a customer relationship: tenure, services, contract commitment, and billing behaviour. A trained model may learn statistical relationships between these attributes and the churn labels. Feature relationships are not automatically causal.
+
+
 ⚙️ Application Workflow
 The application follows this high-level process:
 1. Load files: locate the dataset and saved model relative to the application directory.
