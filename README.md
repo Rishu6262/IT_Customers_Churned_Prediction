@@ -76,42 +76,111 @@ ChurnLens demonstrates the practical implementation of a Machine Learning applic
 
 The project provides a foundation for further exploration of predictive analytics, model evaluation, customer behavior analysis, and responsible use of Machine Learning in business-oriented applications.
 
-📌 Project Overview
-What is customer churn?
-Customer churn occurs when a customer stops using a company's product or service—for example, cancelling an internet subscription, switching telecom providers, or discontinuing a paid service.
+## 📌 Project Overview
 
-Customer churn prediction is a binary classification problem when the target contains two classes, commonly representing customers who left (Yes) and customers who stayed (No). The exact target encoding must be confirmed from the dataset and training process.
-What does ChurnLens do?
-ChurnLens provides a browser-based interface for entering a customer profile. The application prepares the submitted data, applies its implemented preprocessing steps, and passes the prepared features to a saved classification model.
+### What Is Customer Churn?
 
-Depending on the model and its supported methods, the application displays:
-1. Predicted class.
-2. Estimated churn probability.
-3. A visual probability/risk indicator.
-Why is churn prediction useful?
-Validated churn estimates can help a business investigate customer experience, identify patterns in customers who leave, and explore retention strategies. Predictions should be treated as signals for further analysis—not guarantees about an individual customer's behaviour.
-🎯 Project Objectives
-- Explore and understand customer churn data.
-- Identify the target column and predictive features.
-- Validate the dataset schema and numeric fields.
-- Prepare model inputs while excluding the target and non-predictive identifiers where appropriate.
-- Convert categorical inputs into the representation expected by the trained model.
-- Load a saved model and perform inference on customer records.
-- Display churn probability only when the correct class is identified and the model supports probability prediction.
-- Build an accessible, interactive interface using Streamlit.
-- Deploy the application for browser-based access.
-- Document model limitations and verification requirements.
-📂 Dataset Information
-The application expects a CSV file named IT_customer_churn.csv.
-Attribute	Description
-Dataset file	IT_customer_churn.csv
-Target column	Churn
-Format	Structured/tabular CSV
-Problem type	Binary classification, if the target contains two classes
-Domain	Customer analytics / churn prediction
-Identifier	customerID (excluded from features if present)
+Customer churn refers to a situation in which a customer stops using a company's product or service. This may happen when a customer cancels a subscription, switches to another service provider, or decides not to continue a business relationship.
 
+For example, in the telecommunications industry, a customer may discontinue their internet connection due to pricing concerns, poor service quality, lack of support, changing requirements, or a better offer from a competitor.
 
+Understanding customer churn is important because retaining existing customers can be a significant part of maintaining long-term business growth.
+
+### What Is Customer Churn Prediction?
+
+Customer churn prediction is a Machine Learning problem that uses historical customer data to estimate whether a customer is likely to leave a company.
+
+When the target variable contains two classes, the task can be formulated as a **Binary Classification Problem**. The classes commonly represent:
+
+- **No Churn:** The customer continues using the company's service.
+- **Churn:** The customer has discontinued or is classified as having left the service.
+
+The model learns patterns from the data used during training and applies those learned patterns to customer profiles provided for prediction.
+
+The actual class labels, encoding, and prediction behavior depend on the dataset and the model's training configuration.
+
+### What Is ChurnLens?
+
+**ChurnLens** is an end-to-end Machine Learning application designed to explore customer churn prediction through an interactive web interface.
+
+It combines customer data processing, input validation, model loading, prediction logic, and a Streamlit-based interface into a single application.
+
+Instead of requiring users to interact directly with Python code, ChurnLens provides a browser-based form where customer information can be submitted to the deployed prediction system.
+
+The application processes the submitted profile using its implemented preprocessing logic and passes the resulting features to a serialized Machine Learning model.
+
+Depending on the model's supported capabilities and verified class mapping, the application can display:
+
+1. **Predicted Class** — The class returned by the classification model.
+2. **Estimated Churn Probability** — A probability estimate when the model supports `predict_proba()` and the correct churn class is identified.
+3. **Visual Probability Indicator** — A visual representation of the estimated probability.
+4. **Risk Category** — An application-defined category such as Low, Moderate, or High, based on configured thresholds.
+
+These outputs represent model predictions and should not be interpreted as guaranteed customer behavior.
+
+### How ChurnLens Works
+
+The application follows a simple prediction workflow:
+
+1. **Customer Input** — The user enters account, service, contract, and billing information through the Streamlit interface.
+2. **Input Validation** — The application checks the submitted values and required input structure.
+3. **Data Preparation** — Customer input is converted into the format expected by the prediction logic.
+4. **Feature Processing** — Categorical and numerical features are prepared using the implemented preprocessing steps.
+5. **Model Loading** — The saved classification model is loaded into the application.
+6. **Model Inference** — The prepared customer profile is passed to the model to generate a prediction.
+7. **Result Presentation** — The application displays the prediction and supported probability-related information through the interface.
+
+The prediction workflow depends on the compatibility between the deployed model, preprocessing logic, input feature schema, and training configuration.
+
+### Why Is Customer Churn Prediction Useful?
+
+Customer churn prediction can support businesses in understanding customer behavior and exploring potential retention opportunities.
+
+When developed and validated properly, churn prediction systems can help businesses:
+
+- **Identify Potentially At-Risk Customers** — Explore customer profiles that the model associates with churn.
+- **Understand Customer Patterns** — Analyze relationships between customer attributes, services, contracts, and churn outcomes.
+- **Support Retention Analysis** — Investigate customers who may benefit from improved services or customer support.
+- **Prioritize Further Investigation** — Help teams decide which customer segments or profiles require closer analysis.
+- **Make Data-Informed Decisions** — Combine predictive insights with business knowledge, customer feedback, and operational data.
+
+Machine Learning predictions should be used as decision-support signals rather than as standalone decisions about individual customers.
+
+---
+
+## 🎯 Project Objectives
+
+The main objective of ChurnLens is to implement and deploy a customer churn prediction application that demonstrates how structured customer data can be processed and used by a Machine Learning model to generate predictions through an interactive web interface.
+
+### Key Objectives
+
+- **Explore Customer Churn Data** — Understand the structure, characteristics, and patterns of customer-related data.
+
+- **Identify Target and Predictive Features** — Determine the target variable and relevant input features used by the prediction workflow.
+
+- **Validate Dataset Structure** — Check required columns, data types, numerical fields, and input consistency.
+
+- **Prepare Model Inputs** — Process customer information while excluding the target variable and non-predictive identifiers where appropriate.
+
+- **Handle Categorical and Numerical Features** — Prepare different feature types according to the preprocessing requirements of the deployed model.
+
+- **Integrate a Trained Machine Learning Model** — Load a serialized model and use it to generate predictions from customer records.
+
+- **Generate Model Predictions** — Return the predicted class for the submitted customer profile.
+
+- **Display Probability-Based Insights** — Show estimated probability only when the model supports probability prediction and the intended class mapping is verified.
+
+- **Develop an Interactive User Interface** — Build an accessible application using Streamlit so users can interact with the prediction workflow without running code manually.
+
+- **Deploy the Application Online** — Host the application through Streamlit Community Cloud for browser-based access.
+
+- **Document Model Limitations** — Clearly communicate assumptions, compatibility requirements, limitations, and verification requirements related to model predictions.
+
+### Project Outcome
+
+ChurnLens demonstrates the integration of a Machine Learning prediction workflow with a user-facing web application.
+
+The project brings together data handling, feature preparation, model inference, interface development, and deployment, providing a foundation for further development in predictive analytics and customer behavior analysis.
 Target variable
 The target variable is the value the model is trained to predict. In this project, Churn is intended to represent whether a customer left the service.
 
@@ -124,6 +193,8 @@ Dataset preparation performed by the application
 - Converts TotalCharges to numeric values where possible.
 - Removes rows with missing TotalCharges before constructing categorical encoder classes.
 These are basic preparation steps; they do not replace a complete data-quality or training pipeline.
+
+
 🧾 Input Features
 The app collects 19 customer attributes. The available values and data types must match the model's training schema.
 Feature	Description	Example values
