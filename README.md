@@ -390,59 +390,133 @@ The workflow connects data preparation and machine learning inference with an in
 
 > **Note:** Prediction reliability depends on the saved model, training-time preprocessing, feature compatibility, and correct class mapping. Reconstructing categorical encoders at runtime may introduce inconsistencies if their mappings differ from those used during model training.
 > ```
-🧠 Prediction and Probability
-predict()
-The model's predict() method returns a predicted class for the supplied customer record. The meaning of the returned class depends on how the target was encoded during training.
-predict_proba()
-If the estimator supports predict_proba(), it returns probabilities for its classes. The application must identify the correct churn class and use the corresponding probability index.
 
-For example, if the model classes are ordered as:
-model.classes_  # Example: ['No', 'Yes']
-and the probability output is:
+
+## Prediction and Probability
+
+ChurnLens uses a trained classification model to predict whether a customer is likely to churn based on the supplied customer attributes.
+
+### `predict()`
+
+The model's `predict()` method returns the predicted class for a customer record.
+
+The returned class represents the model's classification output. Its interpretation depends on the target labels and class encoding used during model training.
+
+For example, a prediction may represent:
+
+- `No` — Customer is classified as non-churn.
+- `Yes` — Customer is classified as churn.
+
+The actual class mapping must be verified against the model's training configuration.
+
+### `predict_proba()`
+
+If the trained estimator supports `predict_proba()`, the application can retrieve probability estimates for each class.
+
+These probabilities correspond to the class order stored in the model's `classes_` attribute. Therefore, the correct probability index must be identified before displaying the churn probability.
+
+**Example:**
+
+```python
+model.classes_
+# Example output:
+['No', 'Yes']
+```
+
+```python
+model.predict_proba(input_data)
+# Example output:
 [0.18, 0.82]
-then 0.82 represents the estimated probability for Yes only if the class order shown above is confirmed and Yes means churn in the training target.
-Model-estimated probabilities are not automatically calibrated and do not guarantee that an individual customer will churn.
+```
 
-Risk labels
-The UI may map probabilities to labels such as Low, Moderate, or High. These are display thresholds. They should be validated against evaluation data and business needs before being used for operational decisions.
-🏗️ High-Level Architecture
-Browser / User
-     |
-     v
-Streamlit Interface
-     |
-     v
-Customer Profile Form
-     |
-     v
-Input Validation & DataFrame Creation
-     |
-     v
-Categorical Preprocessing
-     |
-     v
-Saved Classification Model
-     |----------------------|
-     v                      v
-Predicted Class       Class Probability
-     |                      |
-     |----------------------|
-              |
-              v
-     Churn Result & Risk Visualization
-📁 Project Structure
+In this example:
+
+| Class | Estimated Probability |
+|---|---:|
+| No Churn | 18% |
+| Churn | 82% |
+
+If the class order is confirmed as `['No', 'Yes']` and `Yes` represents churn, then the estimated churn probability is **82%**.
+
+> **Important:** Model probabilities are estimates, not guarantees. They are not automatically calibrated and should not be interpreted as certainty about an individual customer's future behavior.
+
+### Risk Classification
+
+The application may convert churn probability estimates into user-interface risk labels such as:
+
+| Risk Label | Interpretation |
+|---|---|
+| Low | Lower estimated churn probability |
+| Moderate | Intermediate estimated churn probability |
+| High | Higher estimated churn probability |
+
+These labels are generated using application-defined probability thresholds. They do not represent independent model predictions.
+
+Thresholds should be evaluated using validation data, model performance, and business requirements before being used to prioritize customer retention actions.
+
+---
+
+## High-Level Architecture
+
+ChurnLens follows a simple application architecture that connects the user interface, customer input processing, machine learning model, and prediction visualization.
+
+### Architecture Overview
+
+```mermaid
+flowchart TD
+    A[Browser / User] --> B[Streamlit Interface]
+    B --> C[Customer Profile Form]
+    C --> D[Input Validation & DataFrame Creation]
+    D --> E[Categorical Preprocessing]
+    E --> F[Saved Classification Model]
+
+    F --> G[Predicted Class]
+    F --> H[Class Probability]
+
+    G --> I[Churn Result & Risk Visualization]
+    H --> I
+```
+
+### Architecture Components
+
+| Component | Responsibility |
+|---|---|
+| Browser / User | Accesses and interacts with the ChurnLens application |
+| Streamlit Interface | Provides the interactive web application |
+| Customer Profile Form | Collects customer profile, service, contract, and billing information |
+| Input Validation | Checks and prepares submitted customer data |
+| DataFrame Creation | Organizes customer inputs into the expected model input structure |
+| Categorical Preprocessing | Converts categorical values into numeric representations |
+| Saved Classification Model | Processes the prepared input and generates predictions |
+| Prediction Output | Returns the predicted class and probability estimates when supported |
+| Result Visualization | Displays prediction results and the UI-defined risk indicator |
+
+---
+
+## Project Structure
+
+The project follows a simple structure that keeps the application code, dataset, model artifact, dependencies, and documentation organized.
+
+```text
 churnlens/
 ├── app.py
 ├── requirements.txt
 ├── IT_customer_churn.csv
 ├── best_fraud_model.pkl
 └── README.md
-File	Purpose
-app.py	Streamlit UI, file loading, validation, feature preparation, model inference, and result rendering
-requirements.txt	Python dependencies required to run/deploy the application
-IT_customer_churn.csv	Dataset used to inspect the schema and reconstruct categorical encoder classes
-best_fraud_model.pkl	Serialized estimator currently referenced by the app; verify that it is a churn-trained model
-README.md	Project documentation and setup instructions
+```
+
+### File Descriptions
+
+| File | Purpose |
+|---|---|
+| `app.py` | Main Streamlit application containing the user interface, file loading, validation, feature preparation, model inference, and result rendering. |
+| `requirements.txt` | Lists the Python dependencies required to install and run the application. |
+| `IT_customer_churn.csv` | Customer churn dataset used for schema inspection and reconstructing categorical encoder classes in the current implementation. |
+| `best_fraud_model.pkl` | Serialized estimator currently referenced by the application. Its identity and training configuration should be verified to confirm that it is the intended churn classification model. |
+| `README.md` | Project documentation containing the overview, workflow, architecture, setup instructions, and technical details. |
+
+> **Model artifact verification:** The filename `best_fraud_model.pkl` suggests a fraud-detection model. Its filename alone does not establish what model it contains. Verify the saved estimator, training target, class labels, and feature schema before relying on its churn predictions.
 
 
 ⚠️ Model filename notice
@@ -548,6 +622,7 @@ Possible cause: Missing dependency or incompatible package versions.
 Check: Install the model's required packages and use versions compatible with the training environment. Add XGBoost to requirements.txt only if the estimator requires it.
 Deployment fails
 Check: Read the deployment logs and identify the first relevant error. Verify file paths, dependency versions, and that all required files are committed. Push the fix and redeploy.
+
 🌱 Future Improvements
 1. Save the fitted preprocessing and model together as a single pipeline.
 2. Add model evaluation metrics and a confusion matrix.
@@ -559,6 +634,8 @@ Check: Read the deployment logs and identify the first relevant error. Verify fi
 8. Allow safe download/export of prediction results.
 9. Monitor data drift and model performance after deployment.
 10. Add a model card documenting training data, evaluation, intended use, and limitations.
+
+
 💡 Why This Project Is Valuable
 - End-to-end ML workflow: connects data preparation, preprocessing, inference, UI, and deployment.
 - Practical ML integration: demonstrates how a saved model can be used outside a notebook.
@@ -566,10 +643,14 @@ Check: Read the deployment logs and identify the first relevant error. Verify fi
 - Application development: turns model inference into an interactive Streamlit application.
 - Deployment practice: demonstrates GitHub-based cloud deployment.
 - Portfolio foundation: provides a base for stronger evaluation, testing, monitoring, and production-oriented ML practices.
+
+  
 ✅ Conclusion
 ChurnLens demonstrates how a classification model can be integrated into an interactive Streamlit application to estimate customer churn. The project brings together Python, Pandas, preprocessing, model inference, probability display, UI development, and cloud deployment.
 
 For trustworthy results, the model's training target, feature schema, preprocessing, class mapping, and evaluation performance must be verified. These checks are essential before using the output for customer or business decisions.
+
+
 👨‍💻 Author
 Rishu Gurjar
 B.Tech Computer Science Engineering Student
